@@ -35,12 +35,19 @@ public class Toy {
         this.toy_weight = toy_weight;
     }
 
+    /**
+     * Конструктор класса Toy. Id автоматически увеличивается на 1 при каждом добавлении.
+     * @param toy_name - название игрушки.
+     * @param toy_quantity - доступное количество.
+     * @param toy_weight - шанс выпадения, вес.
+     */
     public Toy(String toy_name, int toy_quantity, float toy_weight) {
         this.toy_id = nextId++;
         this.toy_name = toy_name;
         this.toy_quantity = toy_quantity;
         this.toy_weight = toy_weight;
     }
+
     @Override
     public String toString() {
         //делаем красивое форматирование с выравниванием по левой стороне и разной шириной символов

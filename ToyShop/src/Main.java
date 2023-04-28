@@ -4,8 +4,8 @@ import java.util.*;
 public class Main {
     public static Random random = new Random();
     public static void main(String[] args) {
-        List<Toy> toys = readToysFromFile("src/toys.txt");
         System.out.println("Получаем список доступных игрушек из 'базы':");
+        List<Toy> toys = readToysFromFile("src/toys.txt");
         System.out.println("| ID    | Name                           | Quantity | Weight   |");
         System.out.println("|-------|--------------------------------|----------|----------|");
 
@@ -47,12 +47,17 @@ public class Main {
         System.out.println("================================================================");
 
         System.out.println("\n********************* Выдаем выигрыш ***************************");
-        pushWin(awaitingWinnings);
+        pushWin(awaitingWinnings, "src/win.txt");
 
-        System.out.println("\nСписок ожидающих после выдачи приза:");
+        System.out.println("\nСписок игрушек, ожидающих выдачи после выдачи выигрыша:");
         printArrayListString(awaitingWinnings);
     }
 
+    /**
+     * Метод получения списка доступных игрушек из файла.
+     * @param filePath - путь к файлу
+     * @return Метод возвращает список объектов типа Toy.
+     */
     public static List<Toy> readToysFromFile(String filePath) {
         List<Toy> toys = new ArrayList<>();
 
@@ -73,27 +78,64 @@ public class Main {
         }
         return toys;
     }
+
+    /**
+     * Метод добавления новой игрушки в список.
+     * @param listOfToys - список в которой мы хотим добавить новый элемент.
+     * @param name - Название игрушки.
+     * @param quantity - доступное количество.
+     * @param weight - шанс выпадения, вес.
+     */
     public static void addNewToy(List<Toy> listOfToys, String name, int quantity, float weight){
         Toy newToy = new Toy(name, quantity, weight);
         listOfToys.add(newToy);
     }
+
+    /**
+     * Метод изменения шанса выпадения игрушки, веса.
+     * @param toyToChange - игрушка, для которой изменяем вес.
+     * @param newWeight - новое значение веса (float).
+     */
+
     public static void changeWeight(Toy toyToChange, float newWeight){
         toyToChange.setToy_weight(newWeight);
     }
+
+    /**
+     * Метод изменения доступного кол-ва. К текущему значению прибавляется переданное.
+     * @param toyToChange - Игрушка, которую изменяем.
+     * @param num - сколько хотим прибавить или убавить. Для убавления передавайте -num.
+     */
     public static void changeQuantity(Toy toyToChange, int num){
         toyToChange.setToy_quantity(toyToChange.getToy_quantity() + num);
     }
+
+    /**
+     * Метод для красивого вывода списка игрушек на экран.
+     * @param toyToPrint - какой список хотим распечатать.
+     */
     public static void printToysList(List<Toy> toyToPrint){
         for (Toy t: toyToPrint) {
             System.out.println(t);
         }
     }
+
+    /**
+     * Метод для красивого вывода Массива строк ArrayList на экран.
+     * @param awaitingWinnings - ArrayList<String> который нужно красиво распечатать.
+     */
     public static void printArrayListString(ArrayList<String> awaitingWinnings){
         for (String i: awaitingWinnings) {
             System.out.println(i);
         }
     }
 
+    /**
+     * Метод формирования списка выигрышей.
+     * @param quantWinners - необходимое кол-во выигрышей.
+     * @param toysList - список игрушек из которого выбираются выигрыши.
+     * @return - возвращается список строк ArrayList<String> с игрушками, ожидающими выдачи.
+     */
     public static ArrayList<String> getWinnings(int quantWinners, List<Toy> toysList){
         ArrayList<String> winQueue = new ArrayList<>(quantWinners);
         int winIndex;
@@ -102,11 +144,22 @@ public class Main {
             System.out.println("В список для выдачи попадает игрушка с Id = " + toysList.get(winIndex).getToy_id());
             winQueue.add(String.valueOf(toysList.get(winIndex)));
             changeQuantity(toysList.get(winIndex),-1); //уменьшаем оставшееся количество игрушек
+            //если кол-во после уменьшения стало равно нулю, то убираем игрушку из общего списка.
+            if (toysList.get(winIndex).getToy_quantity() == 0) {
+                toysList.remove(winIndex);
+            }
         }
         return winQueue;
     }
-    public static void pushWin(ArrayList<String> awaitingWinnings) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/win.txt", false))){
+
+    /**
+     * Метод выдачи выигрыша.
+     * Берет первый элемент из списка выигрышей, записывает его в файл и удаляет из списка.
+     * @param awaitingWinnings - список игрушек, ожидающих выдачи.
+     * @param fileName - путь к файлу, куда записать выдачу.
+     */
+    public static void pushWin(ArrayList<String> awaitingWinnings, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))){
             writer.write("| ID    | Name                           | Quantity | Weight   |\n");
             writer.write("|-------|--------------------------------|----------|----------|\n");
             writer.write(awaitingWinnings.remove(0));
