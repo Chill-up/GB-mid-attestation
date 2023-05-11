@@ -5,7 +5,7 @@ public class Main {
     public static Random random = new Random();
     public static void main(String[] args) {
         System.out.println("Получаем список доступных игрушек из 'базы':");
-        List<Toy> toys = readToysFromFile("src/toys.txt");
+        List<Toy> toys = readToysFromFile("toys.txt");
         System.out.println("| ID    | Name                           | Quantity | Weight   |");
         System.out.println("|-------|--------------------------------|----------|----------|");
 
