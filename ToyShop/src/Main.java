@@ -47,7 +47,7 @@ public class Main {
         System.out.println("================================================================");
 
         System.out.println("\n********************* Выдаем выигрыш ***************************");
-        pushWin(awaitingWinnings, "src/win.txt");
+        pushWin(awaitingWinnings, "win.txt");
 
         System.out.println("\nСписок игрушек, ожидающих выдачи после выдачи выигрыша:");
         printArrayListString(awaitingWinnings);
